@@ -32,4 +32,4 @@ def news_list(request):
     context = {
         'object_list': headlines
     }
-    render(request, 'news/home.html', context)
+    return render(request, 'news/home.html', context)
