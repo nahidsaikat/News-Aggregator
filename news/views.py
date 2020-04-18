@@ -40,11 +40,26 @@ def scrape(request):
                 headline.title = h4.text
                 headline.url = url
                 headline.image = image
+                # headline.published_at = get_published_at(url) # commenting out because it takes lots of time.
+                headline.published_at = ''
                 headline.save()
         except Exception as ex:
             print(ex)
 
     return redirect('../')
+
+
+def get_published_at(url):
+    try:
+        content = get_content(url)
+        soup = BSoup(content, 'html.parser')
+        article_div = soup.find_all('div', {'class': 'js_starterpost'})[0]
+        time = article_div.find_all('time')[0].text
+    except Exception as ex:
+        print(ex)
+        time = ''
+
+    return time
 
 
 def news_list(request):
