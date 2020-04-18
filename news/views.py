@@ -4,12 +4,21 @@ from bs4 import BeautifulSoup as BSoup
 from news.models import HeadLine
 
 
-def scrape(request):
+def get_session():
     session = requests.Session()
     session.headers = {'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)'}
-    url = 'https://www.theonion.com/'
+    return session
 
+
+def get_content(url):
+    session = get_session()
     content = session.get(url, verify=False).content
+    return content
+
+
+def scrape(request):
+    url = 'https://www.theonion.com/'
+    content = get_content(url)
     soup = BSoup(content, 'html.parser')
     article_list = soup.find_all('article')
 
@@ -26,12 +35,11 @@ def scrape(request):
                     image = str(img['srcset']).split(' ')[4]
             url = article.find_all('a')[-1]['href']
 
-            headline = HeadLine()
-            headline.title = h4.text
-            headline.url = url
-            headline.image = image
-
             if not HeadLine.objects.filter(url=url).exists():
+                headline = HeadLine()
+                headline.title = h4.text
+                headline.url = url
+                headline.image = image
                 headline.save()
         except Exception as ex:
             print(ex)
