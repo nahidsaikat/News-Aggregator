@@ -11,19 +11,31 @@ def scrape(request):
 
     content = session.get(url, verify=False).content
     soup = BSoup(content, 'html.parser')
-    news = soup.find_all('div', {'class': 'curation-module__item'})
+    article_list = soup.find_all('article')
 
-    for article in news:
-        main = article.find_all('a')[0]
-        link = main['href']
-        image_src = str(main.find('img')['arcset']).split(' ')[-4]
-        title = main['title']
+    for article in article_list:
+        try:
+            image = ''
+            h4 = article.find_all('h4')[0]
+            img = article.find_all('img')
+            if len(img) > 0:
+                img = img[0]
+                if img.has_attr('data-srcset'):
+                    image = str(img['data-srcset']).split(' ')[4]
+                elif img.has_attr('srcset'):
+                    image = str(img['srcset']).split(' ')[4]
+            url = article.find_all('a')[-1]['href']
 
-        headline = HeadLine()
-        headline.title = title
-        headline.url = link
-        headline.image = image_src
-        headline.save()
+            headline = HeadLine()
+            headline.title = h4.text
+            headline.url = url
+            headline.image = image
+
+            if not HeadLine.objects.filter(url=url).exists():
+                headline.save()
+        except Exception as ex:
+            print(ex)
+
     return redirect('../')
 
 

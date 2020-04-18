@@ -1,6 +1,6 @@
 # News-Aggregator
 
-###Dependencies
+### Dependencies
 >Python == 3.8
 >
 >Django == 3.0.5
@@ -9,7 +9,7 @@
 >
 >requests == 2.23.0
 
-###Setup Instructions
+### Setup Instructions
 > git clone https://github.com/nahidsaikat/NewsAggregator.git
 >
 >cd NewsAggregator
