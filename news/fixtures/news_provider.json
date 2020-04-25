@@ -1,0 +1,20 @@
+[
+  {
+    "model": "news.NewsProvider",
+    "pk": 1,
+    "fields": {
+      "title": "The Onion",
+      "url": "https://www.theonion.com/",
+      "code": "1"
+    }
+  },
+  {
+    "model": "news.NewsProvider",
+    "pk": 2,
+    "fields": {
+      "title": "BBC NEWS",
+      "url": "https://www.bbc.com/news",
+      "code": "2"
+    }
+  }
+]
