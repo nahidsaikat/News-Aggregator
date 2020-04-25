@@ -1,65 +1,14 @@
-import requests
 from django.shortcuts import render, redirect
-from bs4 import BeautifulSoup as BSoup
-from news.models import HeadLine
 
-
-def get_session():
-    session = requests.Session()
-    session.headers = {'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)'}
-    return session
-
-
-def get_content(url):
-    session = get_session()
-    content = session.get(url, verify=False).content
-    return content
+from news.models import HeadLine, NewsProvider
+from news.scraper import TheOnionScraper
 
 
 def scrape(request):
-    url = 'https://www.theonion.com/'
-    content = get_content(url)
-    soup = BSoup(content, 'html.parser')
-    article_list = soup.find_all('article')
-
-    for article in article_list:
-        try:
-            image = ''
-            h4 = article.find_all('h4')[0]
-            img = article.find_all('img')
-            if len(img) > 0:
-                img = img[0]
-                if img.has_attr('data-srcset'):
-                    image = str(img['data-srcset']).split(' ')[4]
-                elif img.has_attr('srcset'):
-                    image = str(img['srcset']).split(' ')[4]
-            url = article.find_all('a')[-1]['href']
-
-            if not HeadLine.objects.filter(url=url).exists():
-                headline = HeadLine()
-                headline.title = h4.text
-                headline.url = url
-                headline.image = image
-                # headline.published_at = get_published_at(url) # commenting out because it takes lots of time.
-                headline.published_at = ''
-                headline.save()
-        except Exception as ex:
-            print(ex)
-
+    provider = NewsProvider.objects.filter(code=NewsProvider.Code.THE_ONION).get()
+    scraper = TheOnionScraper(provider=provider)
+    scraper.scrape()
     return redirect('../')
-
-
-def get_published_at(url):
-    try:
-        content = get_content(url)
-        soup = BSoup(content, 'html.parser')
-        article_div = soup.find_all('div', {'class': 'js_starterpost'})[0]
-        time = article_div.find_all('time')[0].text
-    except Exception as ex:
-        print(ex)
-        time = ''
-
-    return time
 
 
 def news_list(request):
