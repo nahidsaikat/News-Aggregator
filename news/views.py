@@ -17,3 +17,11 @@ def news_list(request):
         'object_list': headlines
     }
     return render(request, 'news/home.html', context)
+
+
+def mark_read(request, pk, **kwargs):
+    headline = HeadLine.objects.filter(pk=pk).first()
+    if headline:
+        headline.is_read = request.GET.get('mark', False)
+        headline.save()
+    return redirect('home')
