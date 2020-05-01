@@ -22,6 +22,6 @@ def news_list(request):
 def mark_read(request, pk, **kwargs):
     headline = HeadLine.objects.filter(pk=pk).first()
     if headline:
-        headline.is_read = True
+        headline.is_read = request.GET.get('mark', False)
         headline.save()
     return redirect('home')

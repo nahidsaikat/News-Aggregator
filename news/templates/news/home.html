@@ -25,7 +25,11 @@
             <div class="card-body">
                 <h5 class="card-title"><a href="{{object.url}}">{{object.title}}</a></h5>
             </div>
-            <a href="{% url 'mark_read' object.pk %}" class="btn btn-success">Mark as Read</a>
+            {% if not object.is_read %}
+                <a href="{% url 'mark_read' object.pk %}?mark=1" class="btn btn-success">Mark as Read</a>
+            {% else %}
+                <a href="{% url 'mark_read' object.pk %}?mark=0" class="btn btn-outline-dark">Mark Unread</a>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
