@@ -1,15 +1,19 @@
 import requests
 from bs4 import BeautifulSoup as BSoup
 
-from news.models import HeadLine
+from news.models import HeadLine, NewsProvider
 
 
 class BaseScraper(object):
+    provider_code = None
 
-    def __init__(self, provider):
-        self.provider = provider
+    def __init__(self):
+        if not self.provider_code:
+            raise Exception('You must define a provider_code')
+        self.provider = NewsProvider.objects.filter(code=self.provider_code).get()
 
-    def get_session(self):
+    @staticmethod
+    def get_session():
         session = requests.Session()
         session.headers = {'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)'}
         return session
@@ -32,6 +36,7 @@ class BaseScraper(object):
 
 
 class TheOnionScraper(BaseScraper):
+    provider_code = NewsProvider.ProviderCode.THE_ONION
 
     def scrape(self):
         content = self.get_content()

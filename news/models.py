@@ -2,13 +2,13 @@ from django.db import models
 
 
 class NewsProvider(models.Model):
-    class Code(models.IntegerChoices):
+    class ProviderCode(models.IntegerChoices):
         THE_ONION = 1
         BBC_NEWS = 2
 
     title = models.CharField(max_length=200)
     url = models.TextField()
-    code = models.IntegerField(choices=Code.choices)
+    code = models.IntegerField(choices=ProviderCode.choices)
 
     def __str__(self):
         return self.title
