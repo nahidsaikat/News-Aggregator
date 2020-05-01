@@ -1,18 +1,18 @@
 from django.shortcuts import render, redirect
 
-from news.models import HeadLine, NewsProvider
-from news.scraper import TheOnionScraper
+from news.models import HeadLine
+from news.scraper import BaseScraper
 
 
 def scrape(request):
-    provider = NewsProvider.objects.filter(code=NewsProvider.Code.THE_ONION).get()
-    scraper = TheOnionScraper(provider=provider)
-    scraper.scrape()
+    for ChildClass in BaseScraper.__subclasses__():
+        scraper = ChildClass()
+        scraper.scrape()
     return redirect('../')
 
 
 def news_list(request):
-    headlines = HeadLine.objects.all()[::-1]
+    headlines = HeadLine.objects.all().order_by("-pk")
     context = {
         'object_list': headlines
     }
