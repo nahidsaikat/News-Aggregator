@@ -18,10 +18,15 @@ class BaseScraper(object):
         session.headers = {'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)'}
         return session
 
-    def get_content(self):
+    def get_content(self, url=''):
         session = self.get_session()
-        content = session.get(self.provider.url, verify=False).content
+        content = session.get(url or self.provider.url, verify=False).content
         return content
+
+    def get_soup_obj(self, url=''):
+        content = self.get_content(url=url)
+        soup = BSoup(content, 'html.parser')
+        return soup
 
     def scrape(self):
         raise NotImplementedError('<scrape> method should be implemented')
@@ -39,8 +44,7 @@ class TheOnionScraper(BaseScraper):
     provider_code = NewsProvider.ProviderCode.THE_ONION
 
     def scrape(self):
-        content = self.get_content()
-        soup = BSoup(content, 'html.parser')
+        soup = self.get_soup_obj()
         article_list = soup.find_all('article')
 
         for article in article_list:
@@ -61,7 +65,7 @@ class TheOnionScraper(BaseScraper):
                     'title': h4.text,
                     'url': url,
                     'image': image,
-                    'published_at': ''
+                    'published_at': ''  # self.get_published_at(url) # This method call slow down the scraping.
                 })
             except Exception as ex:
                 print(ex)
@@ -70,8 +74,7 @@ class TheOnionScraper(BaseScraper):
 
     def get_published_at(self, url):
         try:
-            content = self.get_content()
-            soup = BSoup(content, 'html.parser')
+            soup = self.get_soup_obj(url)
             article_div = soup.find_all('div', {'class': 'js_starterpost'})[0]
             time = article_div.find_all('time')[0].text
         except Exception as ex:
@@ -79,3 +82,65 @@ class TheOnionScraper(BaseScraper):
             time = ''
 
         return time
+
+
+class BBCNewsScraper(BaseScraper):
+    provider_code = NewsProvider.ProviderCode.BBC_NEWS
+
+    def scrape(self):
+        soup = self.get_soup_obj()
+
+        # Most Watch
+        li_list = soup.find('ol', {'class': 'gel-layout'}).find_all('li')
+        for li in li_list:
+            try:
+                link = li.find('a')
+                url = self.provider.url.rpartition('/')[0] + link['href']
+                self.create_headline(**{
+                    'provider': self.provider,
+                    'title': link.find_all('span')[-1].get_text(),
+                    'url': url,
+                    'image': '',
+                    'published_at': ''
+                })
+            except Exception as ex:
+                print(ex)
+
+        # Most Read
+        li_list = soup.find('div', {'class': 'nw-c-most-read__items'}).find('ol', {'class': 'gel-layout__item'}).find_all('li')
+        for li in li_list:
+            try:
+                link = li.find('a')
+                url = self.provider.url.rpartition('/')[0] + link['href']
+                self.create_headline(**{
+                    'provider': self.provider,
+                    'title': link.get_text(),
+                    'url': url,
+                    'image': '',
+                    'published_at': ''
+                })
+            except Exception as ex:
+                print(ex)
+
+        # Main Articles
+        div_list = soup.find_all('div', {'class': 'gel-layout__item'})
+        for div in div_list:
+            img = div.find('img')
+            link = div.find('a')
+            if img and link:
+                try:
+                    url = self.provider.url.rpartition('/')[0] + link['href']
+                    if img.has_attr('srcset'):
+                        image = img['srcset'].split(' ')[-2]
+                    else:
+                        image = img['data-src'].format(width=820)
+
+                    self.create_headline(**{
+                        'provider': self.provider,
+                        'title': link.get_text(),
+                        'url': url,
+                        'image': image,
+                        'published_at': ''
+                    })
+                except Exception as e:
+                    print(e)
