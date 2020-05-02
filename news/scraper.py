@@ -93,15 +93,34 @@ class BBCNewsScraper(BaseScraper):
         # Most Watch
         li_list = soup.find('ol', {'class': 'gel-layout'}).find_all('li')
         for li in li_list:
-            link = li.find('a')
-            url = self.provider.url.rpartition('/')[0] + link['href']
-            self.create_headline(**{
-                'provider': self.provider,
-                'title': link.find_all('span')[-1].get_text(),
-                'url': url,
-                'image': '',
-                'published_at': ''
-            })
+            try:
+                link = li.find('a')
+                url = self.provider.url.rpartition('/')[0] + link['href']
+                self.create_headline(**{
+                    'provider': self.provider,
+                    'title': link.find_all('span')[-1].get_text(),
+                    'url': url,
+                    'image': '',
+                    'published_at': ''
+                })
+            except Exception as ex:
+                print(ex)
+
+        # Most Read
+        li_list = soup.find('div', {'class': 'nw-c-most-read__items'}).find('ol', {'class': 'gel-layout__item'}).find_all('li')
+        for li in li_list:
+            try:
+                link = li.find('a')
+                url = self.provider.url.rpartition('/')[0] + link['href']
+                self.create_headline(**{
+                    'provider': self.provider,
+                    'title': link.get_text(),
+                    'url': url,
+                    'image': '',
+                    'published_at': ''
+                })
+            except Exception as ex:
+                print(ex)
 
         # Main Articles
         div_list = soup.find_all('div', {'class': 'gel-layout__item'})
