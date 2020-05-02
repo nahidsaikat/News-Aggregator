@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from news.models import HeadLine
+from news.models import HeadLine, NewsProvider
 from news.scraper import BaseScraper
 
 
@@ -12,7 +12,15 @@ def scrape(request):
 
 
 def news_list(request):
-    headlines = HeadLine.objects.all().order_by("-pk")
+    provider_code = request.GET.get('provider', None)
+    headlines = HeadLine.objects.all()
+
+    if provider_code:
+        provider = NewsProvider.objects.filter(code=provider_code).first()
+        if provider:
+            headlines = headlines.filter(provider=provider)
+    headlines = headlines.order_by("-pk")
+
     context = {
         'object_list': headlines
     }
