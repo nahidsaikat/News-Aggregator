@@ -5,10 +5,21 @@ from news.scraper import BaseScraper
 
 
 def scrape(request):
-    for ChildClass in BaseScraper.__subclasses__():
-        scraper = ChildClass()
-        scraper.scrape()
-    return redirect('../')
+    provider_code = request.GET.get('provider_code', None)
+    if provider_code:
+        scraper = None
+        for ChildClass in BaseScraper.__subclasses__():
+            if ChildClass.provider_code.value == int(provider_code):
+                scraper = ChildClass()
+                break
+        if scraper:
+            scraper.scrape()
+    else:
+        for ChildClass in BaseScraper.__subclasses__():
+            scraper = ChildClass()
+            scraper.scrape()
+
+    return redirect(reverse('home') + f'?provider_code={provider_code}')
 
 
 def news_list(request):
