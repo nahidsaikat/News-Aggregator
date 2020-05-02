@@ -10,37 +10,38 @@
     <link rel="stylesheet" type="text/css" href="{% static 'news.css' %}">
 </head>
 <body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark " style="background-color: green;">
+      <div class="container">
+        <a class="" href="{% url 'home' %}">
+          <img src="{% static '/icons/home-4-32.png' %}" alt="" title="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="" href="{% url 'home' %}">
-        <img src="{% static '/icons/home-black-36dp.svg' %}" alt="" title="">
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}">
 
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'home' %}">
-
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}?provider_code=1">THE ONION</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}?provider_code=2">BBC NEWS</a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}?provider_code=1">THE ONION</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}?provider_code=2">BBC NEWS</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
       </div>
     </nav>
 
-    <div class="container-fluid">
+<!--    <div class="container-fluid">-->
     <div class="jumbotron">
         <center>
             <h1>News Aggregator</h1>
@@ -49,7 +50,7 @@
             </form>
         </center>
     </div>
-    </div>
+<!--    </div>-->
 
     <div class="container-fluid">
     <div class="row" style="padding: 10px;">
