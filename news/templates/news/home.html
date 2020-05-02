@@ -27,10 +27,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}?provider=1">THE ONION</a>
+            <a class="nav-link" href="{% url 'home' %}?provider_code=1">THE ONION</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}?provider=2">BBC NEWS</a>
+            <a class="nav-link" href="{% url 'home' %}?provider_code=2">BBC NEWS</a>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -45,7 +45,7 @@
         <center>
             <h1>News Aggregator</h1>
             <form>
-                <a href="{% url 'scrape' %}" class="btn btn-success">Grab All News</a>
+                <a href="{% url 'scrape' %}?provider_code={{ provider_code }}" class="btn btn-success">{{ button_text }}</a>
             </form>
         </center>
     </div>
