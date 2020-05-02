@@ -82,3 +82,32 @@ class TheOnionScraper(BaseScraper):
             time = ''
 
         return time
+
+
+class BBCNewsScraper(BaseScraper):
+    provider_code = NewsProvider.ProviderCode.BBC_NEWS
+
+    def scrape(self):
+        soup = self.get_soup_obj()
+        div_list = soup.find_all('div', {'class': 'gel-layout__item'})
+
+        for div in div_list:
+            img = div.find('img')
+            link = div.find('a')
+            if img and link:
+                try:
+                    url = self.provider.url.rpartition('/')[0] + link['href']
+                    if img.has_attr('srcset'):
+                        image = img['srcset'].split(' ')[-2]
+                    else:
+                        image = img['data-src'].format(width=820)
+
+                    self.create_headline(**{
+                        'provider': self.provider,
+                        'title': link.get_text(),
+                        'url': url,
+                        'image': image,
+                        'published_at': ''
+                    })
+                except Exception as e:
+                    print(e)
