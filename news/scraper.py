@@ -15,7 +15,7 @@ class BaseScraper(object):
     @staticmethod
     def get_session():
         session = requests.Session()
-        session.headers = {'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)'}
+        session.headers = {'User-Agent': 'Mozilla/5.0'}
         return session
 
     def get_content(self, url=''):
