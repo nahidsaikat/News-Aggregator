@@ -23,15 +23,23 @@ def scrape(request):
 
 
 def news_list(request):
+    return get_news_list_response(request)
+
+
+def get_news_list_response(request, search=''):
     button_text = 'Grab All News'
     provider_code = request.GET.get('provider_code', None)
     headlines = HeadLine.objects.all()
+
+    if search:
+        headlines = headlines.filter(title__icontains=search)
 
     if provider_code:
         provider = NewsProvider.objects.filter(code=provider_code).first()
         button_text = 'Grab ' + provider.get_code_display()
         if provider:
             headlines = headlines.filter(provider=provider)
+
     headlines = headlines.order_by("-pk")
 
     context = {
@@ -48,3 +56,7 @@ def mark_read(request, pk, **kwargs):
         headline.is_read = request.GET.get('mark', False)
         headline.save()
     return redirect('home')
+
+
+def search(request, **kwargs):
+    return get_news_list_response(request, search=request.POST.get('search', ''))
