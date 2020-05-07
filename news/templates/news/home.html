@@ -6,7 +6,7 @@
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" type="text/css" href="{% static 'news.css' %}">
 </head>
 <body>
@@ -54,21 +54,47 @@
 <!--    </div>-->
 
     <div class="container-fluid">
-    <div class="row" style="padding: 10px;">
-        {% for object in object_list %}
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src = "{{ object.image }}">
-            <div class="card-body">
-                <h5 class="card-title"><a href="{{object.url}}">{{object.title}}</a></h5>
-            </div>
-            {% if not object.is_read %}
-                <a href="{% url 'mark_read' object.pk %}?mark=1" class="btn btn-success">Mark as Read</a>
-            {% else %}
-                <a href="{% url 'mark_read' object.pk %}?mark=0" class="btn btn-outline-dark">Mark Unread</a>
-            {% endif %}
+        <div class="row" style="padding: 10px;">
+          {% for object in object_list %}
+          <div class="card" style="width: 18rem;">
+              <img class="card-img-top" src = "{{ object.image }}">
+              <div class="card-body">
+                  <h5 class="card-title"><a href="{{object.url}}">{{object.title}}</a></h5>
+              </div>
+              {% if not object.is_read %}
+                  <a href="{% url 'mark_read' object.pk %}?mark=1" class="btn btn-success">Mark as Read</a>
+              {% else %}
+                  <a href="{% url 'mark_read' object.pk %}?mark=0" class="btn btn-outline-dark">Mark Unread</a>
+              {% endif %}
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+
+        {% if object_list.has_other_pages %}
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              {% if object_list.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ object_list.previous_page_number }}">Previous</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><a class="page-link">Previous</a></li>
+              {% endif %}
+              {% for i in object_list.paginator.page_range %}
+                {% if object_list.number == i %}
+                  <li class="page-item active"><a class="page-link">{{ i }} <span class="sr-only">(current)</span></a></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+              {% endfor %}
+              {% if object_list.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ object_list.next_page_number }}">Next</a></li>
+              {% else %}
+                <li class="page-item disabled"><a class="page-link">Next</a></li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
     </div>
 
     <script src="http://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>

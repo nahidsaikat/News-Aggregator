@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from news.models import HeadLine, NewsProvider
 from news.scraper import BaseScraper
@@ -41,6 +42,15 @@ def get_news_list_response(request, search=''):
             headlines = headlines.filter(provider=provider)
 
     headlines = headlines.order_by("-pk")
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(headlines, 20)
+    try:
+        headlines = paginator.page(page)
+    except PageNotAnInteger:
+        headlines = paginator.page(1)
+    except EmptyPage:
+        headlines = paginator.page(paginator.num_pages)
 
     context = {
         'object_list': headlines,
