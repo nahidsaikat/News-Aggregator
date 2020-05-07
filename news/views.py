@@ -27,13 +27,17 @@ def news_list(request):
     return get_news_list_response(request)
 
 
-def get_news_list_response(request, search=''):
+def provider_home(request, code, **kwargs):
+    return get_news_list_response(request, provider_code=code)
+
+
+def get_news_list_response(request, search_title='', provider_code=None):
     button_text = 'Grab All News'
-    provider_code = request.GET.get('provider_code', None)
+    provider_code = provider_code or request.GET.get('provider_code', None)
     headlines = HeadLine.objects.all()
 
-    if search:
-        headlines = headlines.filter(title__icontains=search)
+    if search_title:
+        headlines = headlines.filter(title__icontains=search_title)
 
     if provider_code:
         provider = NewsProvider.objects.filter(code=provider_code).first()
@@ -65,7 +69,15 @@ def mark_read(request, pk, **kwargs):
     if headline:
         headline.is_read = request.GET.get('mark', False)
         headline.save()
-    return redirect('home')
+
+    url_name = 'home'
+    url_kwargs = {}
+    provider_code = request.GET.get('provider_code', False)
+    if provider_code:
+        url_name = 'provider_home'
+        url_kwargs['code'] = provider_code
+
+    return redirect(url_name, **url_kwargs)
 
 
 def search(request, **kwargs):
