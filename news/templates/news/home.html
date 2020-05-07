@@ -22,15 +22,21 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
           <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="{% url 'home' %}">
-
-              </a>
+              <a class="nav-link" href="{% url 'home' %}"></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'provider_home' 1 %}">THE ONION</a>
+              {% if provider_code == 1 %}
+                <a class="nav-link active" href="{% url 'provider_home' 1 %}">THE ONION</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'provider_home' 1 %}">THE ONION</a>
+              {% endif %}
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'provider_home' 2 %}">BBC NEWS</a>
+              {% if provider_code == 2 %}
+                <a class="nav-link active" href="{% url 'provider_home' 2 %}">BBC NEWS</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'provider_home' 2 %}">BBC NEWS</a>
+              {% endif %}
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'search' %}?provider_code={{ provider_code }}">

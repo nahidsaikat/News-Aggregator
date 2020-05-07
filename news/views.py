@@ -71,14 +71,16 @@ def mark_read(request, pk, **kwargs):
         headline.save()
 
     url_name = 'home'
-    url_kwargs = {}
+    url_args = []
     provider_code = request.GET.get('provider_code', False)
     if provider_code:
         url_name = 'provider_home'
-        url_kwargs['code'] = provider_code
+        url_args = [provider_code]
 
-    return redirect(url_name, **url_kwargs)
+    url = reverse(url_name, args=url_args)
+
+    return redirect(url)
 
 
 def search(request, **kwargs):
-    return get_news_list_response(request, search=request.POST.get('search', ''))
+    return get_news_list_response(request, search_title=request.POST.get('search', ''))
