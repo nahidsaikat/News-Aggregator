@@ -68,10 +68,10 @@
                   <h5 class="card-title"><a href="{{object.url}}">{{object.title}}</a></h5>
               </div>
               {% if not object.is_read %}
-                  <a href="{% url 'mark_read' object.pk %}?mark=1&provider_code={{ provider_code }}"
+                  <a href="{% url 'mark_read' object.pk %}?mark=1&provider_code={{ provider_code }}&page={{ page_no }}"
                      class="btn btn-success">Mark as Read</a>
               {% else %}
-                  <a href="{% url 'mark_read' object.pk %}?mark=0&provider_code={{ provider_code }}"
+                  <a href="{% url 'mark_read' object.pk %}?mark=0&provider_code={{ provider_code }}&page={{ page_no }}"
                      class="btn btn-outline-dark">Mark Unread</a>
               {% endif %}
           </div>

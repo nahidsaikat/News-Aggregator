@@ -47,10 +47,10 @@ def get_news_list_response(request, search_title='', provider_code=None):
 
     headlines = headlines.order_by("-pk")
 
-    page = request.GET.get('page', 1)
+    page_no = request.GET.get('page', 1)
     paginator = Paginator(headlines, 20)
     try:
-        headlines = paginator.page(page)
+        headlines = paginator.page(page_no)
     except PageNotAnInteger:
         headlines = paginator.page(1)
     except EmptyPage:
@@ -59,12 +59,14 @@ def get_news_list_response(request, search_title='', provider_code=None):
     context = {
         'object_list': headlines,
         'button_text': button_text.upper(),
-        'provider_code': provider_code or ''
+        'provider_code': provider_code or '',
+        'page_no': page_no,
     }
     return render(request, 'news/home.html', context)
 
 
 def mark_read(request, pk, **kwargs):
+    page_no = request.GET.get('page', 1)
     headline = HeadLine.objects.filter(pk=pk).first()
     if headline:
         headline.is_read = request.GET.get('mark', False)
@@ -77,7 +79,7 @@ def mark_read(request, pk, **kwargs):
         url_name = 'provider_home'
         url_args = [provider_code]
 
-    url = reverse(url_name, args=url_args)
+    url = f'{reverse(url_name, args=url_args)}?page={page_no}'
 
     return redirect(url)
 
