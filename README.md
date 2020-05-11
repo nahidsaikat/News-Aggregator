@@ -1,13 +1,10 @@
 # News-Aggregator
 
 ### Dependencies
->Python == 3.8
->
->Django == 3.0.5
->
->beautifulsoup4 == 4.9.0
->
->requests == 2.23.0
+* Python == 3.8
+* Django == 3.0.5
+* beautifulsoup4 == 4.9.0
+* requests == 2.23.0
 
 ### Setup Instructions
 * git clone https://github.com/nahidsaikat/NewsAggregator.git
@@ -17,3 +14,11 @@
 * python manage.py migrate
 * python manage.py loaddata news_provider.json
 * python manage.py runserver
+
+### Features
+* Grab THE ONION news
+* Grab BBC NEWS
+* Search by title
+* Pagination
+* Mark read
+* Mark unread
