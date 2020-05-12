@@ -22,3 +22,8 @@
 * Pagination
 * Mark read
 * Mark unread
+
+### Screen Shots
+![Image description](/docs/1.jpg)
+
+![Image description](/docs/2.jpg)
