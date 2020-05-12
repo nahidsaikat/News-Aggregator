@@ -24,6 +24,8 @@
 * Mark unread
 
 ### Screen Shots
-![Image description](/docs/1.jpg)
+* Home Page Top 
+![Image description](https://raw.githubusercontent.com/nahidsaikat/NewsAggregator/master/docs/images/1.jpg)
 
-![Image description](/docs/2.jpg)
+* Home Page Bottom
+![Image description](https://raw.githubusercontent.com/nahidsaikat/NewsAggregator/master/docs/images/2.jpg)
